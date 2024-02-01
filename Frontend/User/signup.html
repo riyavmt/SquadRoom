@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign-Up Page</title>
+    <link rel = "stylesheet" href="signup.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body>
+    <div class = "container">
+        <h1><b>SquadRoom</b></h1><br>
+        
+        <p id = "messageAlert"></p>
+
+        <form id = "myForm">
+            <input type = "name" class = "form-control" name = "name" id = "name" placeholder = "Enter Name" required><br>
+            <input type = "mail" class = "form-control" name = "mail" id = "mail" placeholder = "Enter Email" required><br>
+            <input type = "phone" class = "form-control" name = "contact" id = "contact" placeholder = "Enter Phone Number" required><br>
+            <input type = "password" class = "form-control" name = "password" id = "password" placeholder = "Enter password" required><br>
+            <button class = "btn btn-sm btn-dark w-100" type = "submit" id = "create">Create Account</button>
+            <br>
+            <br>
+            <a href = "login.html">Already have an account? Login.</a>
+        </form>
+    </div>
+    <script src="signup.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+</body>
+</html>
