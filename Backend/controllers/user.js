@@ -22,10 +22,20 @@ exports.postSignup = async(req,res)=>{
             })
         }
         else{
-            res.json({message:"Email already exists",userFound:true});
+            res.json({message:"Email already exists! Please login.",userFound:true});
         }
     }
     catch(err){
         console.log(err);
     }
+}
+
+exports.postLogin = async(req,res)=>{
+    try{
+        console.log(req.body);
+    }
+    catch(err){
+        console.log(err);
+    }
+
 }

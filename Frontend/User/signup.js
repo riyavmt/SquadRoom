@@ -14,6 +14,7 @@ async function create(e){
         const alert = document.getElementById('messageAlert');
         if(res.data.userFound){
             alert.innerHTML = res.data.message;
+            alert.style.textDecoration = "bold";
             alert.style.display = "block";
             alert.style.color = "Red";
         }
