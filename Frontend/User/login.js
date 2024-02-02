@@ -10,6 +10,15 @@ async function login(e){
     try{
         const res = await axios.post("http://localhost:3000/login",loginData);
         const alert = document.getElementById('messageAlert');
+        if(res.data.userData){
+            alert.innerHTML = res.data.message;
+            alert.style.color = "Blue";
+            
+        }
+        else{
+            alert.innerHTML = res.data.message;
+            alert.style.color = "Red";
+        }
         
     }
     catch(err){

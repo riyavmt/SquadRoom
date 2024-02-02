@@ -30,9 +30,33 @@ exports.postSignup = async(req,res)=>{
     }
 }
 
+const secretKey = process.env.JWT_SECRET
+
+
+function generateToken(id,name){
+    return jwt.sign({userId:id,name:name},secretKey)
+}
 exports.postLogin = async(req,res)=>{
     try{
-        console.log(req.body);
+        const userData = await Users.findOne({where:{email:req.body.email}});
+        console.log(userData);
+        if(userData){
+            const userPassword = userData.password;
+            const result = await bcrypt.compare(req.body.password,userPassword,(err,result)=>{
+                if(err){
+                    throw new err("Something went wrong")
+                }
+                else if(result===true){
+                    res.json({message:"Successfully logged in!",userData:true,token:generateToken(userData.id, userData.name)});
+                }
+                else{
+                    res.json({message:"Incorrect Password"});
+                }
+            })
+        }
+        else{
+            res.json({message:"Invalid Email/Password"})
+        }
     }
     catch(err){
         console.log(err);
