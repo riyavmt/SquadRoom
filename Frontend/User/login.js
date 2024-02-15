@@ -13,6 +13,7 @@ async function login(e){
         if(res.data.userData){
             alert.innerHTML = res.data.message;
             alert.style.color = "Blue";
+            window.location.href="/Frontend/Chat/chat.html"
             
         }
         else{

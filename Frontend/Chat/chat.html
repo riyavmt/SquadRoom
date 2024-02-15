@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat-App</title>
+    <link rel = "stylesheet" href = "chat.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!-- Option 1: Include in HTML -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <h3><b>Squad-Room</b></h3>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      
+        <div class="collapse navbar-collapse d-lg-flex justify-content-end " id="navbarSupportedContent">
+            <div>
+                <ul class="navbar-nav ml-auto ">
+                    
+                    <li class="nav-item text-center">
+                        <button id="create" class="btn btn-light" data-toggle="modal" data-target="#exampleModal" onclick= createGroup()>Create New Group</button>
+                        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header d-flex justify-content-center bg-dark text-white ">
+                                  <div class="d-flex flex-column">
+                                   
+                                    <input type="text" class="form-control" id="groupname" name="groupname" placeholder="enter group name">
+                               
+                                  </div>
+                                </div>
+                                <div class="modal-body">
+                                  <h5>Select Users:</h5>
+                                   <div class="user-list">
+                                    <input type="checkbox" id="riya" name="riya" value="riya"> <label for="riya">riya</label> <br>
+                                    <input type="checkbox" id="tejas" name="tejas" value="tejas"> <label for="tejas">tejas</label> <br>
+                                    <input type="checkbox" id="micky" name="micky" value="micky"> <label for="micky">micky</label> <br>
+                                                               
+                                   </div>
+
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" id="close" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                  <button type="button" class="btn btn-primary" onclick="createGroup()">create</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                    </li>
+                    <li class="nav-item text-center">
+                        <button id="users"  class="btn btn-light" onclick = showUsersList()>Users</button>   
+                    </li>
+                    <li class="nav-item text-center">
+                        <button id="logout" class="btn btn-dark">Logout</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+        <div class = "container-fluid ">
+            <div class=" w-25 chat-list">
+              <h1 class="text-center">Chats</h1>
+               <!-- CHAT LIST -->
+              <div class="chat-name">chat 1</div>
+              
+            </div>
+            <!-- MESSAGES -->
+            <div class="w-75 chat-content">
+              <div class="text-light chat-header">
+                <i class="bi bi-people-fill"></i>
+                <span>group Name</span>
+              </div>
+              <div class="message-container">
+                  <div><p class="self">You: hello</p></div>
+                  <div class="other">user: Hi</div>
+                  <div class="other">user: Hi</div>
+                  <div><p class="self">You: hello</p></div>
+                  <div class="other">user: Hi</div>
+              </div>
+              <div class="d-flex">
+                <button class="btn btn-secondary me-1" onclick="sendFile()"><i class="bi text-light bi-folder-symlink-fill"></i></button>
+                <input type="file" id="fileInput" style="display: none;">
+                <form class="w-100 send-message">
+                    <div class=" d-flex">
+                        <input type="text" class="form-control" name="message" id="enter-message" placeholder="Send a message">
+                        
+                        <button type="submit" class="btn btn-danger ms-1"><i class="bi bi-arrow-up-right"></i></button>
+                    </div>
+                </form>
+            </div>
+            </div>
+            <div class = "list-container">
+              <ul id = "usersList"> 
+  
+              </ul>
+          </div>   
+            
+        </div>
+        
+        <script src = "chat.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    
+        </body>
+</html>
+
+
+
+
+
+

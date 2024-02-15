@@ -21,7 +21,7 @@ async function create(e){
         else{
             alert.innerHTML= res.data.message;
             alert.style.display = "block";
-            window.location.href="/login.html"
+            window.location.href="/Frontend/User/login.html"
         }
 
     }

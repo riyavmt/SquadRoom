@@ -1,0 +1,118 @@
+html,body{
+    height: 100%;
+}
+
+
+.navbar{
+    width:100%;
+    height:100px;
+    line-height:75px;
+    padding: 0px 100px;
+    position:fixed;
+    background-color: rgb(240, 182, 81);
+}
+h3{
+    font-weight: bolder;
+    margin: 20px;
+}
+#create, #users, #logout{
+    background-color: rgb(236, 200, 147);
+    border: 2px solid black;
+    border-radius: 10px;
+    color: black;
+    font-family:Georgia, 'Times New Roman', Times, serif ;
+    font-weight: bold;
+    width: fit-content;
+    margin:20px;
+} 
+#search{
+    background-color: rgb(240, 214, 172);
+    border: 2px solid black;
+    border-radius: 10px;
+    color: black;
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif ;
+    font-weight: 300;
+    width: fit-content;
+    margin:20px;
+}
+input#searchUser{
+    width: 300px;
+}
+.container-fluid{
+    display: flex;
+    justify-content: start;
+    height: 80%;
+}
+#groupList{
+    font-weight: bold;
+    font-size:x-large;
+    float:left;
+}
+
+.user-list{
+    display: flex;
+    gap: .8rem;
+}
+.chat-list{
+    border: 1px solid black;
+    background-color: grey;
+    border-radius: 10px;
+    width: 25%;
+}
+.chat-content{
+    width: 75%;
+    background-color: #050552;
+    padding: 0;
+    /* height: 90%; */
+    overflow: auto;
+     
+}
+.list-container{
+    display: none;
+    background-color: darkgrey;
+}
+.chat-name{
+    text-align: center;
+    font-size: 1.5rem;
+    margin: 5px;
+    padding: 5px;
+    background-color: darkgray;
+    border-radius: 5px;
+}
+.chat-name:hover{
+    cursor:pointer;
+    border: 1px solid white;
+}
+.chat-header{
+    background-color: black;
+    color:white;
+ 
+    padding: 10px;
+}
+.message-container{
+    /* background-color: aliceblue; */
+    height: 75%;
+    color: white;
+    margin: 10px;
+    display: flex;
+    /* justify-content:flex-start; */
+    flex-direction: column;
+}
+.self{  
+    padding: 0 5px;
+    border: 2px solid #353a47;
+    background-color:#353a47 ;
+    border-radius: 10px;
+    width: fit-content;
+    float: right !important;
+    margin: 10px;
+}
+.other{
+    padding: 0 5px;
+    border: 2px solid #353a47;
+    border-radius: 10px;
+    width: fit-content;
+    margin: 10px;
+    
+
+}

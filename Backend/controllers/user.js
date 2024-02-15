@@ -63,3 +63,15 @@ exports.postLogin = async(req,res)=>{
     }
 
 }
+
+exports.getUsersList = async(req,res)=>{
+    try{
+        const userList = await Users.findAll({
+            attributes: ['name']
+        });
+        res.json(userList); 
+    }
+    catch(err){
+        console.log(err);
+    }
+}
