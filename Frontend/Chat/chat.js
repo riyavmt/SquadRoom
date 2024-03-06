@@ -85,6 +85,19 @@ function displayMessage(message){
     container.appendChild(div);
 }
 
+window.addEventListener("DOMContentLoaded",async()=>{
+    try{
+        const response = await axios.get("http://localhost:3000/message?groupId=1");
+        console.log(response.data);
+        response.data.forEach((element)=>{
+            displayMessage(element.message);
+        })
+    }
+    catch(err){
+        console.log(err);
+    }
+})
+
 function logout(e){
     e.preventDefault();
     const logoutConfirmed = window.confirm("Are you sure you want to logout?");

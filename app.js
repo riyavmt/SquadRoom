@@ -24,6 +24,7 @@ Group.belongsToMany(Users, { through: UserGroup });
 Users.belongsToMany(Group, { through: UserGroup });
 
 Message.belongsTo(Users);
+// Message.belongsTo(Group);
 
 
 async function startServer(){
