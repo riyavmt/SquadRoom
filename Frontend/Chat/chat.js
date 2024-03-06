@@ -63,6 +63,7 @@ async function sendMessage(e){
     }
     try{
         displayMessage(message);
+        form.reset();
         const res = await axios.post("http://localhost:3000/message",messageData,{
             headers: {
                 'Authorization' : `${token}`
@@ -85,18 +86,37 @@ function displayMessage(message){
     container.appendChild(div);
 }
 
-window.addEventListener("DOMContentLoaded",async()=>{
-    try{
+async function fetchMessages(){
+    try {
         const response = await axios.get("http://localhost:3000/message?groupId=1");
         console.log(response.data);
-        response.data.forEach((element)=>{
+        response.data.forEach((element) => {
             displayMessage(element.message);
-        })
-    }
-    catch(err){
+        });
+    } catch (err) {
         console.log(err);
     }
-})
+};
+window.addEventListener("DOMContentLoaded", async () => {
+    try {
+        await fetchMessages(); 
+        startInterval(); 
+    } 
+    catch (err) {
+        console.log(err);
+    }
+});
+
+let intervalId =null;
+
+function startInterval() {
+    if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null; // Set intervalId to null after clearing
+    } else {
+        intervalId = setInterval(fetchMessages, 1000);
+    }
+} 
 
 function logout(e){
     e.preventDefault();
