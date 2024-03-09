@@ -7,20 +7,27 @@ const form = document.getElementById("chatPage");
 form.addEventListener("submit",sendMessage);
 let users=[];
 let flag=false;
+
+
 function searchUser(){
     alert("Here is the user you are trying to find");
 }
-window.addEventListener('DOMContentLoaded',async() =>{
-    try {
-        
+
+async function fetchUsersList(){
+    try{
         const userListResponse = await axios.get("http://localhost:3000/users-list");
         console.log(userListResponse.data);
         users =[...userListResponse.data];
         console.log(users)
-    } catch (error) {
+    }
+    catch(err){
+        console.log(err);
+    }
+}
+   
         
-    }    
-})
+        
+
 function createGroup(){
     // alert("Group Created");
     const checkboxes = document.querySelectorAll('.user-list input[type="checkbox"]');
@@ -87,33 +94,39 @@ function displayMessage(message){
 }
 
 async function fetchMessages(){
-    try {
+    try{
+        container.innerHTML = ""; 
         const response = await axios.get("http://localhost:3000/message?groupId=1");
-        console.log(response.data);
-        response.data.forEach((element) => {
+        console.log(response.data.message);
+        localStorage.setItem("Messages",JSON.stringify(response.data));
+        
+        response.data.forEach((element) =>{
             displayMessage(element.message);
         });
-    } catch (err) {
+    }
+    catch (err){
         console.log(err);
     }
 };
-window.addEventListener("DOMContentLoaded", async () => {
-    try {
+window.addEventListener("DOMContentLoaded", async () =>{
+    try{
         await fetchMessages(); 
-        startInterval(); 
+        startInterval();
+        await fetchUsersList(); 
     } 
-    catch (err) {
+    catch(err){
         console.log(err);
     }
 });
 
 let intervalId =null;
 
-function startInterval() {
-    if (intervalId) {
+function startInterval(){
+    if(intervalId){
         clearInterval(intervalId);
         intervalId = null; // Set intervalId to null after clearing
-    } else {
+    }
+    else{
         intervalId = setInterval(fetchMessages, 1000);
     }
 } 
