@@ -78,6 +78,11 @@ input#searchUser{
     padding: 5px;
     background-color: darkgray;
     border-radius: 5px;
+    list-style: none;
+}
+.chat-name li{
+    margin:5px;
+    background-color: rgb(116, 112, 112);
 }
 .chat-name:hover{
     cursor:pointer;

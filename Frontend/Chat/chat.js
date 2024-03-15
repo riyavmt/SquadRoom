@@ -4,10 +4,13 @@ const list = document.getElementById("usersList");
 const container = document.querySelector(".message-container");
 const token = localStorage.getItem('token');
 const form = document.getElementById("chatPage");
+const div = document.querySelector(".user-list");
+const chatdiv = document.querySelector(".chat-name");
+const groupName = document.getElementById("groupname");
 form.addEventListener("submit",sendMessage);
 let users=[];
 let flag=false;
-
+let currentGroupId;
 
 function searchUser(){
     alert("Here is the user you are trying to find");
@@ -25,25 +28,8 @@ async function fetchUsersList(){
     }
 }
    
-        
-        
-
-function createGroup(){
-    // alert("Group Created");
-    const checkboxes = document.querySelectorAll('.user-list input[type="checkbox"]');
-    const checkedValues = [];
-  
-    checkboxes.forEach(checkbox => {
-      if (checkbox.checked) {
-        checkedValues.push(checkbox.value);
-      }
-    });
-  
-    console.log(checkedValues);
-    document.getElementById('close').click();
-}
 function showUsersList(element){
-    // console.log(users)
+    // console.log(users);
     const listContainer = document.querySelector('.list-container');
     flag=!flag;
     list.innerHTML='';
@@ -62,11 +48,90 @@ function showUsersList(element){
     
 }
 
+function showUsersListInModal(){
+    users.forEach((element) =>{
+        console.log(element);
+        const li = document.createElement('li');
+        li.innerHTML = `<input type="checkbox" name="element.name" value="${element.id}" >${element.name}</input>`;
+        div.appendChild(li);
+    });
+}
+
+async function createGroup(){
+        // alert("Group Created");
+        try{
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            const checkedValues = [];
+        
+            checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                checkedValues.push(checkbox.value);
+            }
+            });
+        
+            console.log(checkedValues);
+
+            
+
+
+            document.getElementById('close').click();
+            const groupNameValue = `${groupName.value}`;
+            const groupDetails = {
+                name:groupNameValue,
+                userIds:checkedValues
+            }
+            const res = await axios.post("http://localhost:3000/createGroup",groupDetails,{
+                headers:{
+                    'Authorization':`${token}`
+                }
+            });
+            showGroup(res.data.id,groupNameValue);
+            showChat(res.data.id);
+            
+        }
+        catch(err){
+            console.log(err);
+        }
+
+}
+
+async function getGroup(){
+    try{
+        
+        const res = await axios.get("http://localhost:3000/getGroup",{
+            headers:{
+                'Authorization':`${token}`
+            }
+        }); 
+        res.data.forEach(group => {showGroup(group.groupId , group.groupName)});
+    }
+    catch(err){
+        console.log(err);
+    }
+}
+
+function showGroup(id,groupName){
+        const li = document.createElement("li");
+        li.innerHTML=`${groupName}`;
+        li.addEventListener("click",()=>showChat(id));
+        chatdiv.prepend(li); 
+}
+
+
+function showChat(id,groupName){
+    console.log(id);
+    currentGroupId=id;
+    document.getElementById('groupname').innerText=groupName;
+    fetchMessages()
+}
+
+
 async function sendMessage(e){
     e.preventDefault();
     const message = e.target.message.value;
     const messageData = {
-        message : message
+        message : message,
+        groupId: currentGroupId
     }
     try{
         displayMessage(message);
@@ -96,7 +161,12 @@ function displayMessage(message){
 async function fetchMessages(){
     try{
         container.innerHTML = ""; 
-        const response = await axios.get("http://localhost:3000/message?groupId=1");
+        const response = await axios.get(`http://localhost:3000/message?groupId=${currentGroupId}`,
+        {
+            headers:{
+                'Authorization': `${token}`
+            }
+        });
         console.log(response.data.message);
         localStorage.setItem("Messages",JSON.stringify(response.data));
         
@@ -112,7 +182,10 @@ window.addEventListener("DOMContentLoaded", async () =>{
     try{
         await fetchMessages(); 
         startInterval();
-        await fetchUsersList(); 
+        await fetchUsersList();
+        showUsersListInModal();
+        await getGroup();
+        document.querySelector('.chat-name').firstElementChild.click();
     } 
     catch(err){
         console.log(err);
@@ -137,4 +210,4 @@ function logout(e){
     if(logoutConfirmed){
         window.location.href = "/Frontend/User/login.html"
     }
-}
+};

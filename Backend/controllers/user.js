@@ -67,7 +67,7 @@ exports.postLogin = async(req,res)=>{//req received by the BE
 exports.getUsersList = async(req,res)=>{
     try{
         const userList = await Users.findAll({
-            attributes: ['name']
+            attributes: ['name','id']
         });
         res.json(userList); 
     }
