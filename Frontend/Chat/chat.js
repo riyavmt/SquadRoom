@@ -20,7 +20,7 @@ function searchUser(){
 
 async function fetchUsersList(){
     try{
-        const userListResponse = await axios.get("http://localhost:3000/users-list",{
+        const userListResponse = await axios.get("http://16.170.165.137:3000/users-list",{
             headers:{
                 'Authorization':`${token}`
             }
@@ -85,7 +85,7 @@ async function createGroup(){
                 name:groupNameValue,
                 userIds:checkedValues
             }
-            const res = await axios.post("http://localhost:3000/createGroup",groupDetails,{
+            const res = await axios.post("http://16.170.165.137:3000/createGroup",groupDetails,{
                 headers:{
                     'Authorization':`${token}`
                 }
@@ -104,7 +104,7 @@ async function createGroup(){
 async function getGroup(){
     try{
         
-        const res = await axios.get("http://localhost:3000/getGroup",{
+        const res = await axios.get("http://16.170.165.137:3000/getGroup",{
             headers:{
                 'Authorization':`${token}`
             }
@@ -129,7 +129,7 @@ const groupInfo = document.querySelector(".group-info");
 async function showGroupInfo(id){
     groupInfo.style.display = "block"
     try{
-        const res = await axios.get(`http://localhost:3000/get-members?groupId=${currentGroupId}`);
+        const res = await axios.get(`http://16.170.165.137:3000/get-members?groupId=${currentGroupId}`);
         const membersList = document.getElementById('members-list');  
         document.getElementById('total-members').innerHTML=`Total Members - ${res.data.length}`;
         //to clear the memberslist ul
@@ -173,7 +173,7 @@ async function sendMessage(e){
     try{
         displayMessage(message);
         form.reset();
-        const res = await axios.post("http://localhost:3000/message",messageData,{
+        const res = await axios.post("http://16.170.165.137:3000/message",messageData,{
             headers: {
                 'Authorization' : `${token}`
             }
@@ -198,7 +198,7 @@ function displayMessage(message){
 async function fetchMessages(){
     try{
         container.innerHTML = ""; 
-        const response = await axios.get(`http://localhost:3000/message?groupId=${currentGroupId}`,
+        const response = await axios.get(`http://16.170.165.137:3000/message?groupId=${currentGroupId}`,
         {
             headers:{
                 'Authorization': `${token}`

@@ -8,7 +8,7 @@ async function login(e){
         password: e.target.password.value
     }
     try{
-        const res = await axios.post("http://localhost:3000/login",loginData);//loginData is sent to the backend along with the post req
+        const res = await axios.post("http://16.170.165.137:3000/login",loginData);//loginData is sent to the backend along with the post req
         const alert = document.getElementById('messageAlert');
         if(res.data.userData){
             alert.innerHTML = res.data.message;
