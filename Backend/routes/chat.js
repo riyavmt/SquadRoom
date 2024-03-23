@@ -7,4 +7,5 @@ router.post('/message',userAuthentication.authenticate,chatController.postMessag
 router.get('/message',userAuthentication.authenticate,chatController.getMessage);
 router.post('/createGroup',userAuthentication.authenticate,chatController.postCreateGroup);
 router.get('/getGroup',userAuthentication.authenticate,chatController.getGroup);
+router.get('/get-members',chatController.getMembers);
 module.exports = router;

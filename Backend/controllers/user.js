@@ -3,6 +3,7 @@ const Users = require('../model/user');
 const bcrypt = require('bcrypt');
 const Sib = require('sib-api-v3-sdk');
 const { v4: uuidv4 } = require('uuid');
+const { Op } = require('sequelize');
 require('dotenv').config();
 
 exports.postSignup = async(req,res)=>{//post req received by the backend
@@ -65,10 +66,16 @@ exports.postLogin = async(req,res)=>{//req received by the BE
 }
 
 exports.getUsersList = async(req,res)=>{
+    console.log(req.user.userId)
     try{
-        const userList = await Users.findAll({
-            attributes: ['name','id']
+        const userList = await Users.findAll(
+            {
+            attributes: ['name','id'],
+            where:{
+            id:{[Op.ne]:req.user.userId}
+            }
         });
+        console.log(userList)
         res.json(userList); 
     }
     catch(err){
