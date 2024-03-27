@@ -3,15 +3,26 @@ logoutBtn.addEventListener("click",logout);
 const list = document.getElementById("usersList");
 const container = document.querySelector(".message-container");
 const token = localStorage.getItem('token');
+const username = localStorage.getItem('userName');
 const form = document.getElementById("chatPage");
 const div = document.querySelector(".user-list");
 const chatdiv = document.querySelector(".chat-name");
 const groupName = document.getElementById("groupname");
 const groupChatName = document.getElementById("groupChatName");
 form.addEventListener("submit",sendMessage);
+var io;
+const socket = io('http://localhost:3000/');
 let users=[];
 let flag=false;
 let currentGroupId;
+
+socket.on('connect',()=>{
+    console.log(`Connected to ${socket.id}`)
+})
+socket.on('received-message',(data)=>{
+    console.log(data)
+    displayMessage(data);
+})
 
 
 function searchUser(){
@@ -20,7 +31,7 @@ function searchUser(){
 
 async function fetchUsersList(){
     try{
-        const userListResponse = await axios.get("http://16.170.165.137:3000/users-list",{
+        const userListResponse = await axios.get("http://localhost:3000/users-list",{
             headers:{
                 'Authorization':`${token}`
             }
@@ -61,6 +72,7 @@ function showUsersListInModal(){
         li.innerHTML = `<input type="checkbox" name="element.name" value="${element.id}" >${element.name}</input>`;
         div.appendChild(li);
     });
+    
 }
 
 async function createGroup(){
@@ -85,7 +97,7 @@ async function createGroup(){
                 name:groupNameValue,
                 userIds:checkedValues
             }
-            const res = await axios.post("http://16.170.165.137:3000/createGroup",groupDetails,{
+            const res = await axios.post("http://localhost:3000/createGroup",groupDetails,{
                 headers:{
                     'Authorization':`${token}`
                 }
@@ -104,7 +116,7 @@ async function createGroup(){
 async function getGroup(){
     try{
         
-        const res = await axios.get("http://16.170.165.137:3000/getGroup",{
+        const res = await axios.get("http://localhost:3000/getGroup",{
             headers:{
                 'Authorization':`${token}`
             }
@@ -129,7 +141,7 @@ const groupInfo = document.querySelector(".group-info");
 async function showGroupInfo(id){
     groupInfo.style.display = "block"
     try{
-        const res = await axios.get(`http://16.170.165.137:3000/get-members?groupId=${currentGroupId}`);
+        const res = await axios.get(`http://localhost:3000/get-members?groupId=${currentGroupId}`);
         const membersList = document.getElementById('members-list');  
         document.getElementById('total-members').innerHTML=`Total Members - ${res.data.length}`;
         //to clear the memberslist ul
@@ -155,6 +167,10 @@ function showChat(id,groupName){
     console.log(id);
     currentGroupId=id;
     groupInfo.style.display='none';
+    if(currentGroupId) {
+        socket.emit('leave-group', currentGroupId);
+    } 
+    socket.emit('group-join',id);
     document.getElementById('groupname').innerText=groupName;
     // document.getElementById('groupChatName').innerText=groupName;
     groupChatName.textContent = groupName; 
@@ -168,47 +184,48 @@ async function sendMessage(e){
     const message = e.target.message.value;
     const messageData = {
         message : message,
-        groupId: currentGroupId
+        groupId: currentGroupId,
+        username:username
     }
     try{
-        displayMessage(message);
+        socket.emit("message",messageData);
+        displayMessage(messageData);
         form.reset();
-        const res = await axios.post("http://16.170.165.137:3000/message",messageData,{
+        const res = await axios.post("http://localhost:3000/message",messageData,{
             headers: {
                 'Authorization' : `${token}`
             }
         });
-        
-         
     }
-    catch(err){
+    catch(err){ 
         console.log(err);
     }
-     
-
 }
 
-function displayMessage(message){
-    console.log(message);
+function displayMessage(messageData){
+    console.log("display:",messageData);
     const div = document.createElement('div');
-    div.innerHTML = `<p class = "self"> You: ${message}</p>`;
+    if(username===messageData.username){
+        div.innerHTML = `<p class = "self"> You: ${messageData.message}</p>`;
+    }
+    else  div.innerHTML = `<p class = "other"> ${messageData.username}: ${messageData.message}</p>`;
     container.appendChild(div);
 }
 
 async function fetchMessages(){
     try{
         container.innerHTML = ""; 
-        const response = await axios.get(`http://16.170.165.137:3000/message?groupId=${currentGroupId}`,
+        const response = await axios.get(`http://localhost:3000/message?groupId=${currentGroupId}`,
         {
             headers:{
                 'Authorization': `${token}`
             }
         });
-        console.log(response.data.message);
+        console.log("resdata",response.data);
         localStorage.setItem("Messages",JSON.stringify(response.data));
         
         response.data.forEach((element) =>{
-            displayMessage(element.message);
+            displayMessage({message:element.message,username:element.user.name});
         });
     }
     catch (err){
@@ -218,7 +235,7 @@ async function fetchMessages(){
 window.addEventListener("DOMContentLoaded", async () =>{
     try{
         await fetchMessages(); 
-        startInterval();
+        // startInterval();
         await fetchUsersList();
         showUsersListInModal();
         await getGroup();
@@ -229,22 +246,22 @@ window.addEventListener("DOMContentLoaded", async () =>{
     }
 });
 
-let intervalId =null;
+// let intervalId =null;
 
-function startInterval(){
-    if(intervalId){
-        clearInterval(intervalId);
-        intervalId = null; // Set intervalId to null after clearing
-    }
-    else{
-        intervalId = setInterval(fetchMessages, 100000);
-    }
-} 
+// function startInterval(){
+//     if(intervalId){
+//         clearInterval(intervalId);
+//         intervalId = null; // Set intervalId to null after clearing
+//     }
+//     else{
+//         intervalId = setInterval(fetchMessages, 100000);
+//     }
+// } 
 
 function logout(e){
     e.preventDefault();
     const logoutConfirmed = window.confirm("Are you sure you want to logout?");
     if(logoutConfirmed){
-        window.location.href = "/Frontend/User/login.html"
+        window.location.href = "/User/login.html"
     }
 };

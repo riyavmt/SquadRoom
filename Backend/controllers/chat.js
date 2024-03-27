@@ -13,7 +13,8 @@ exports.postMessage = async(req,res)=>{
 }
 exports.getMessage = async(req,res)=>{
     try{
-        const messages = await Message.findAll({where:{groupId:req.query.groupId}});
+        const messages = await Message.findAll({where:{groupId:req.query.groupId},include: [{ model: User, attributes: ['name'] }]})
+         
         console.log(messages);
         res.json(messages);
     }

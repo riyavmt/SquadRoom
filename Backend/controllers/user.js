@@ -48,7 +48,7 @@ exports.postLogin = async(req,res)=>{//req received by the BE
                     throw new err("Something went wrong")//error during comparison
                 }
                 else if(result===true){//if paassword matches
-                    res.json({message:"Successfully logged in!",userData:true,token:generateToken(userData.id, userData.name)});//
+                    res.json({message:"Successfully logged in!",userData:true,token:generateToken(userData.id, userData.name),userName:userData.name});//
                 }
                 else{
                     res.json({message:"Incorrect Password"});//if password doesn't match

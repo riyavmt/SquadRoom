@@ -10,7 +10,7 @@ async function create(e){
         password:e.target.password.value,
     };
     try{
-        const res = await axios.post("http://16.170.165.137:3000/signup",data);
+        const res = await axios.post("http://localhost:3000/signup",data);
         const alert = document.getElementById('messageAlert');
         if(res.data.userFound){//if account already exists
             alert.innerHTML = res.data.message;
@@ -21,7 +21,7 @@ async function create(e){
         else{
             alert.innerHTML= res.data.message;
             alert.style.display = "block";
-            window.location.href="/Frontend/User/login.html"//moving to the login page as soon as the account is created successfully
+            window.location.href="/User/login.html"//moving to the login page as soon as the account is created successfully
         }
 
     }
