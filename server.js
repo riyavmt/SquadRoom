@@ -4,6 +4,8 @@ const app = express();
 const bodyParser = require('body-parser');  
 const cors = require('cors');
 require('dotenv').config();
+const { CronJob } = require( 'cron');
+const backup = require ('./Controllers/archivedChat');
 
 const sequelize = require('./Backend/util/database');
 const userRoute = require('./Backend/routes/user');
@@ -12,6 +14,7 @@ const Users = require('./Backend/model/user');
 const Group = require('./Backend/model/group');
 const UserGroup = require('./Backend/model/userGroup');
 const Message = require("./Backend/model/message");
+const ArchivedChat = require("./Backend/model/archivedChat");
 const socketIo = require('socket.io')
 app.use(express.static(path.join(__dirname, 'Frontend')));
 app.use(cors());
@@ -76,7 +79,8 @@ app.use((req,res)=>{
     if(req.url==='/') res.redirect('http://16.170.165.137/User/login.html')
     res.sendFile(path.join(__dirname,`Frontend/${req.url}`));
 })
-
+const job = new CronJob('00 00 00 * * *',backup);
+job.start();
 async function startServer(){
     try{
         await sequelize.sync({force:false});
