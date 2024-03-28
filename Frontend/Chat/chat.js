@@ -9,9 +9,10 @@ const div = document.querySelector(".user-list");
 const chatdiv = document.querySelector(".chat-name");
 const groupName = document.getElementById("groupname");
 const groupChatName = document.getElementById("groupChatName");
+
 form.addEventListener("submit",sendMessage);
 var io;
-const socket = io('http://localhost:3000/');
+const socket = io('http://16.170.165.137/');
 let users=[];
 let flag=false;
 let currentGroupId;
@@ -31,7 +32,7 @@ function searchUser(){
 
 async function fetchUsersList(){
     try{
-        const userListResponse = await axios.get("http://localhost:3000/users-list",{
+        const userListResponse = await axios.get("http://16.170.165.137/users-list",{
             headers:{
                 'Authorization':`${token}`
             }
@@ -97,7 +98,7 @@ async function createGroup(){
                 name:groupNameValue,
                 userIds:checkedValues
             }
-            const res = await axios.post("http://localhost:3000/createGroup",groupDetails,{
+            const res = await axios.post("http://16.170.165.137/createGroup",groupDetails,{
                 headers:{
                     'Authorization':`${token}`
                 }
@@ -116,7 +117,7 @@ async function createGroup(){
 async function getGroup(){
     try{
         
-        const res = await axios.get("http://localhost:3000/getGroup",{
+        const res = await axios.get("http://16.170.165.137/getGroup",{
             headers:{
                 'Authorization':`${token}`
             }
@@ -141,7 +142,7 @@ const groupInfo = document.querySelector(".group-info");
 async function showGroupInfo(id){
     groupInfo.style.display = "block"
     try{
-        const res = await axios.get(`http://localhost:3000/get-members?groupId=${currentGroupId}`);
+        const res = await axios.get(`http://16.170.165.137/get-members?groupId=${currentGroupId}`);
         const membersList = document.getElementById('members-list');  
         document.getElementById('total-members').innerHTML=`Total Members - ${res.data.length}`;
         //to clear the memberslist ul
@@ -185,37 +186,82 @@ async function sendMessage(e){
     const messageData = {
         message : message,
         groupId: currentGroupId,
-        username:username
+        username:username,
+        type:"text"
     }
     try{
         socket.emit("message",messageData);
         displayMessage(messageData);
         form.reset();
-        const res = await axios.post("http://localhost:3000/message",messageData,{
+        const res = await axios.post("http://16.170.165.137/message",messageData,{
             headers: {
                 'Authorization' : `${token}`
             }
         });
+        
     }
     catch(err){ 
         console.log(err);
     }
 }
 
+function sendFile(){
+    document.getElementById('fileInput').click();
+}
+
+async function handleFile(files){
+    console.log(files);
+        try {
+            const formData = new FormData();
+            formData.append("file", files[0]);
+
+            const response = await axios.post(`http://16.170.165.137/sendFile?groupId=${currentGroupId}`, formData, {
+                headers: {
+                    'Authorization': token,
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            console.log('in ')
+            console.log(response.data.chat.message);
+            const messageData = {
+                message : response.data.chat.message,
+                groupId: currentGroupId,
+                username:username,
+                type:"image/png"
+            }
+            socket.emit("message",messageData);
+            displayMessage(messageData);
+        } catch (error) {
+            console.error('Upload failed:', error);
+        }
+
+}
+
 function displayMessage(messageData){
     console.log("display:",messageData);
     const div = document.createElement('div');
-    if(username===messageData.username){
-        div.innerHTML = `<p class = "self"> You: ${messageData.message}</p>`;
+    let messageInput = '';
+    const img = `<img style="width: 150px; height: 150px;" src="${messageData.message}" alt="Image"></img>`
+    // if(username===messageData.username){
+    //     div.innerHTML = `<p class = "self"> You: ${messageData.message}</p>`;
+    // }
+    // else  div.innerHTML = `<p class = "other"> ${messageData.username}: ${messageData.message}</p>`;
+    if(messageData.type==="text"){
+         messageInput = username===messageData.username?`<p class = "self"> You: ${messageData.message}</p>`:`<p class = "other"> ${messageData.username}: ${messageData.message}</p>`
     }
-    else  div.innerHTML = `<p class = "other"> ${messageData.username}: ${messageData.message}</p>`;
+    else if(messageData.type=="image/png"){
+         messageInput = username===messageData.username?`<p class = "self"> You: ${img}</p>`:`<p class = "other"> ${messageData.username}: ${img}</p>`
+    }
+    
+    div.innerHTML = messageInput
     container.appendChild(div);
 }
+
 
 async function fetchMessages(){
     try{
         container.innerHTML = ""; 
-        const response = await axios.get(`http://localhost:3000/message?groupId=${currentGroupId}`,
+        const response = await axios.get(`http://16.170.165.137/message?groupId=${currentGroupId}`,
         {
             headers:{
                 'Authorization': `${token}`
@@ -225,7 +271,7 @@ async function fetchMessages(){
         localStorage.setItem("Messages",JSON.stringify(response.data));
         
         response.data.forEach((element) =>{
-            displayMessage({message:element.message,username:element.user.name});
+            displayMessage({message:element.message,username:element.user.name,type:element.type});
         });
     }
     catch (err){

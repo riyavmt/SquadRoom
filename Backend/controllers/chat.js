@@ -2,6 +2,7 @@ const Message = require("../model/message");
 const Group = require("../model/group");
 const UserGroup = require("../model/userGroup");
 const User = require("../model/user");
+const uploadToS3 = require("../services/s3services");
 exports.postMessage = async(req,res)=>{
     try{
         console.log(req.user);
@@ -11,9 +12,29 @@ exports.postMessage = async(req,res)=>{
         console.log(err);
     }
 }
+
+exports.sendFile = async (req,res) => {
+    try {
+        const groupId  = req.query.groupId;
+        const file = req.files[0];
+        console.log("file:",file)
+        const fileURL = await uploadToS3(file,file.originalname);
+
+        const chat = await Message.create(
+            {message:fileURL, userId: req.user.userId,groupId:groupId,type:file.mimetype},
+
+        );
+
+        res.status(200).json({ chat, status: true });
+
+
+    } catch (err) {
+        console.log(err);
+    }
+};
 exports.getMessage = async(req,res)=>{
     try{
-        const messages = await Message.findAll({where:{groupId:req.query.groupId},include: [{ model: User, attributes: ['name'] }]})
+        const messages = await Message.findAll({where:{groupId:req.query.groupId},include: [{ model: User, attributes: ['name'] }]});
          
         console.log(messages);
         res.json(messages);
